@@ -6,21 +6,29 @@ public class PlayerController : MonoBehaviour
     // Дія «рух»: клавіші (стрілки й WASD) призначаються в Inspector
     public InputAction MoveAction;
 
+    // Фізичне тіло робота і поточний напрямок руху
+    Rigidbody2D rigidbody2d;
+    Vector2 move;
+
     // Викликається один раз перед першим Update
     void Start()
     {
         MoveAction.Enable();
+        rigidbody2d = GetComponent<Rigidbody2D>();
     }
 
-    // Викликається рушієм щокадру
+    // Щокадру тільки читаємо ввід
     void Update()
     {
-        // Читаємо напрямок: x і y від -1 до 1
-        Vector2 move = MoveAction.ReadValue<Vector2>();
+        move = MoveAction.ReadValue<Vector2>();
         Debug.Log(move);
+    }
 
-        // 3 одиниці за секунду; Time.deltaTime робить швидкість незалежною від fps
-        Vector2 position = (Vector2)transform.position + move * 3.0f * Time.deltaTime;
-        transform.position = position;
+    // У такт фізики рухаємо тіло через рушій
+    void FixedUpdate()
+    {
+        Vector2 position = (Vector2)rigidbody2d.position
+            + move * 3.0f * Time.deltaTime;
+        rigidbody2d.MovePosition(position);
     }
 }
