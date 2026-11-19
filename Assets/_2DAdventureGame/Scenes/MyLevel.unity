@@ -516,6 +516,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   player: {fileID: 1941801991}
   uiHandler: {fileID: 1144506268}
+  winClip: {fileID: 8300000, guid: d88a197d7751c9a448eea078220825db, type: 3}
+  restartDelay: 3
 --- !u!4 &294988180
 Transform:
   m_ObjectHideFlags: 0
