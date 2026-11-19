@@ -5,6 +5,7 @@ public class EnemyController : MonoBehaviour
     public float speed = 1.0f;
     public bool vertical;
     public float changeTime = 3.0f;
+    public AudioClip fixClip;
 
     Rigidbody2D rigidbody2d;
     Animator animator;
@@ -72,7 +73,12 @@ public class EnemyController : MonoBehaviour
 
     public void Fix()
     {
+        if (!broken)
+        {
+            return;
+        }
         broken = false;
+        Sfx.Play(fixClip);
         rigidbody2d.simulated = false;
         animator.SetTrigger("Fixed");
     }

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,6 +20,13 @@ public class PlayerController : MonoBehaviour
     Animator animator;
     Vector2 moveDirection = new Vector2(1, 0);
 
+    public AudioClip hitClip;
+    public AudioClip collectClip;
+    public AudioClip launchClip;
+    public Color hitColor = new Color(1f, 0.29f, 0.29f);
+    public Color healColor = new Color(0.36f, 1f, 0.48f);
+    SpriteRenderer spriteRenderer;
+
     public GameObject projectilePrefab;
     public InputAction LaunchAction;
 
@@ -32,6 +40,7 @@ public class PlayerController : MonoBehaviour
         TalkAction.Enable();
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         currentHealth = maxHealth;
     }
 
@@ -103,6 +112,13 @@ public class PlayerController : MonoBehaviour
             isInvincible = true;
             damageCooldown = timeInvincible;
             animator.SetTrigger("Hit");
+            Sfx.Play(hitClip);
+            StartCoroutine(Flash(hitColor));
+        }
+        else if (amount > 0)
+        {
+            Sfx.Play(collectClip);
+            StartCoroutine(Flash(healColor));
         }
 
         currentHealth = Mathf.Clamp(currentHealth + amount,
@@ -111,8 +127,17 @@ public class PlayerController : MonoBehaviour
             currentHealth / (float)maxHealth);
     }
 
+    IEnumerator Flash(Color color)
+    {
+        if (spriteRenderer == null) yield break;
+        spriteRenderer.color = color;
+        yield return new WaitForSeconds(0.15f);
+        spriteRenderer.color = Color.white;
+    }
+
     void Launch()
     {
+        Sfx.Play(launchClip);
         GameObject projectileObject = Instantiate(projectilePrefab,
             rigidbody2d.position + Vector2.up * 0.5f,
             Quaternion.identity);
